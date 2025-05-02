@@ -1,0 +1,363 @@
+.cart-slider {
+  position: fixed;
+  top: 0;
+  right: -40%;
+  width: 40%;
+  height: 100vh;
+  background-color: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1050;
+  transition: right 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-slider.show {
+  right: 0;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.cart-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.close-btn {
+  color: #666;
+  padding: 0;
+}
+
+.cart-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-cart {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.empty-cart p {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.cart-items {
+  flex: 1;
+}
+
+.cart-footer {
+  margin-top: auto;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.checkout-btn {
+  padding: 0.75rem;
+}
+
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+input.form-control:focus {
+  border-color: #28a745;
+  outline: none;
+  box-shadow: none;
+}
+
+.btn a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.btn a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+select[name="category"]:focus,
+select[name="minRating"]:focus {
+  box-shadow: none !important;
+  border-color: #28a745 !important;
+  outline: none;
+}
+
+.marquee-content {
+  animation: scroll 25s linear infinite;
+  display: flex;
+}
+
+.marquee-content-slow {
+  animation: scroll 35s linear infinite;
+  display: flex;
+}
+
+.marquee-container:hover .marquee-content,
+.marquee-container:hover .marquee-content-slow {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-container {
+  overflow: hidden;
+}
+
+.category-card {
+  transition: transform 0.3s ease;
+  border-radius: 0.25rem;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+}
+
+.fa-star,
+.fa-star-half-alt {
+  font-size: 0.9rem;
+  margin-right: 2px;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.bg-light-green {
+  background-color: #e8f5e9;
+}
+
+.contact-section {
+  background-color: #f8f9fa;
+  padding: 80px 0;
+}
+
+.section-title {
+  color: #1c2a1a;
+  position: relative;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.section-title:after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background-color: #2e7d32;
+  margin: 15px auto 0;
+}
+
+.contact-info-card,
+.contact-form-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.contact-info-card:hover,
+.contact-form-card:hover {
+  transform: translateY(-5px);
+}
+
+.icon-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(46, 125, 50, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2e7d32;
+}
+
+.card-title {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.form-control-lg,
+.form-select {
+  border-radius: 8px;
+  border: 1px solid #cfe8cf;
+  padding: 12px 20px;
+  outline: none;
+}
+
+.form-control-lg:focus,
+.form-select:focus,
+textarea.form-control-lg:focus {
+  box-shadow: none;
+  border-color: #2e7d32;
+  outline: 2px solid rgba(46, 125, 50, 0.5);
+}
+
+.form-select.form-control-lg {
+  padding-right: 2.5rem;
+  background-color: white;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%232e7d32' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px 12px;
+}
+
+.form-label {
+  color: #2e7d32;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.submit-btn {
+  background-color: #2e7d32;
+  border-color: #2e7d32;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #1b5e20;
+  border-color: #1b5e20;
+  transform: translateY(-2px);
+}
+
+.submit-btn:focus {
+  box-shadow: none;
+  outline: 2px solid rgba(46, 125, 50, 0.5);
+}
+
+.contact-info-item h5 {
+  color: #1c2a1a;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.map-container {
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+.contact-form-card {
+  background-color: #fcfffc;
+}
+
+.lead {
+  color: #1c2a1a;
+}
+
+.lead {
+  color: #1c2a1a;
+}
+
+.food-select {
+  border: 1px solid #cfe8cf;
+  color: #1c2a1a;
+}
+
+.food-select:focus {
+  border-color: #2e7d32 !important; 
+  box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25) !important;
+  outline: none !important;
+}
+
+.food-select option {
+  background-color: white;
+  color: #1c2a1a;
+  padding: 10px;
+}
+
+.food-select option {
+  background-color: #c8e6c9;
+  color: #1c2a1a;
+}
+
+.food-select option:checked {
+  background-color: #81c784;
+  color: white;
+}
+
+.cart-slider {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 500px;
+  height: 100vh;
+  background: #fff;
+  z-index: 1050;
+  transition: right 0.3s ease-in-out;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.15);
+}
+
+.cart-slider.show {
+  right: 0;
+}
+
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  z-index: 1040;
+}
+
+
+@media (max-width: 768px) {
+  .cart-slider {
+    width: 80%;
+    right: -80%;
+  }
+}
+
+@media (max-width: 576px) {
+  .cart-slider {
+    width: 100%;
+    right: -100%;
+  }
+}

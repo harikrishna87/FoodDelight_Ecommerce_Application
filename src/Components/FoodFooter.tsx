@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, InputGroup, ListGroup, Nav } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Form, Button, InputGroup, Nav } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 interface FooterProps {
   companyName?: string;

@@ -1,6 +1,4 @@
 import { Card } from 'react-bootstrap';
-import customStyles  from "../styles/Styles"
-
 interface Testimonial {
     id: number;
     name: string;

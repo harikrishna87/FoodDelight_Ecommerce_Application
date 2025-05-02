@@ -1,4 +1,4 @@
-import React, { JSX, useState, useEffect } from 'react';
+import React, { JSX, useState} from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { FaShoppingBasket } from 'react-icons/fa';
 import axios from 'axios';

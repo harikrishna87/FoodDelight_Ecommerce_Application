@@ -143,7 +143,18 @@ const FoodNavbar: React.FC = () => {
   };
 
   const getCategoryColor = (category: string): string => {
-    return 'success';
+    switch (category.toLowerCase()) {
+      case 'appetizer':
+        return 'primary';
+      case 'main course':
+        return 'danger';
+      case 'dessert':
+        return 'warning';
+      case 'beverage':
+        return 'info';
+      default:
+        return 'success';
+    }
   };
 
   const triggerConfetti = () => {

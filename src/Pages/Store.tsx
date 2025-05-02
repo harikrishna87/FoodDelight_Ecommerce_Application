@@ -70,7 +70,6 @@ const Store: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [showFilters, setShowFilters] = useState<boolean>(false);
     const [categories, setCategories] = useState<string[]>([]);
@@ -119,7 +118,8 @@ const Store: React.FC = () => {
                     setLoading(false);
                 }, 1000);
             } catch (err) {
-                setError('Failed to fetch products. Please try again later.');
+                // Handle error but don't set the unused error state
+                console.error('Failed to fetch products:', err);
                 setLoading(false);
             }
         };
@@ -178,7 +178,7 @@ const Store: React.FC = () => {
     const addToCart = async (product: Product) => {
         try {
             setAddingToCart(prev => ({ ...prev, [product.id]: true }));
-    
+
             const cartItem = {
                 name: product.title,
                 image: product.image,
@@ -188,7 +188,7 @@ const Store: React.FC = () => {
                 original_price: product.price,
                 discount_price: calculateDiscountedPrice(product.price, product.category)
             };
-    
+
             const response = await axios.post('https://fooddelight-back-end.onrender.com/cart/add_item', cartItem);
             toast.success(response.data.message || "Item added to cart successfully", {
                 position: "top-right",
@@ -650,20 +650,8 @@ const Store: React.FC = () => {
                         <Pagination>{renderPaginationItems()}</Pagination>
                     </div>
                 )}
-
-                {loading && (
-                    <div className="d-flex justify-content-center mt-4">
-                        <Pagination>
-                            <Pagination.Prev disabled />
-                            <Pagination.Item active>1</Pagination.Item>
-                            <Pagination.Item disabled>2</Pagination.Item>
-                            <Pagination.Item disabled>3</Pagination.Item>
-                            <Pagination.Next disabled />
-                        </Pagination>
-                    </div>
-                )}
+                <ToastContainer />
             </Container>
-            <ToastContainer />
         </div>
     );
 };

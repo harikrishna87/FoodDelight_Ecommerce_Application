@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircle, ShoppingBag } from 'lucide-react';
 
 interface SuccessModalProps {

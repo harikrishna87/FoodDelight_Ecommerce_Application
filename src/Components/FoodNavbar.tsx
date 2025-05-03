@@ -6,9 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import confetti from "canvas-confetti";
 
-// Import the new SuccessModal component
-import SuccessModal from "./SuccessModal";
-
 declare const Razorpay: any;
 
 interface CartItem {
@@ -29,7 +26,7 @@ const FoodNavbar: React.FC = () => {
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false);
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [cartCount, setCartCount] = useState<number>(0);
-  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
   const [countdownValue, setCountdownValue] = useState<number>(10);
 
   const fetchCartItems = () => {
@@ -188,7 +185,7 @@ const FoodNavbar: React.FC = () => {
   const handleOrderSuccess = () => {
     clearCart();
     setShowCart(false);
-    setShowSuccessModal(true);
+    setShowSuccessMessage(true);
     setCountdownValue(10);
     triggerConfetti();
   };
@@ -196,12 +193,12 @@ const FoodNavbar: React.FC = () => {
   useEffect(() => {
     let countdownInterval: NodeJS.Timeout;
     
-    if (showSuccessModal && countdownValue > 0) {
+    if (showSuccessMessage && countdownValue > 0) {
       countdownInterval = setInterval(() => {
         setCountdownValue(prev => {
           if (prev <= 1) {
             clearInterval(countdownInterval);
-            setShowSuccessModal(false);
+            setShowSuccessMessage(false);
             return 0;
           }
           return prev - 1;
@@ -212,7 +209,7 @@ const FoodNavbar: React.FC = () => {
     return () => {
       if (countdownInterval) clearInterval(countdownInterval);
     };
-  }, [showSuccessModal, countdownValue]);
+  }, [showSuccessMessage, countdownValue]);
 
   const checkoutHandler = async (amount: number | string) => {
     try {
@@ -295,6 +292,7 @@ const FoodNavbar: React.FC = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      
       <div className={`cart-slider ${showCart ? 'show' : ''}`}>
         <div className="cart-header d-flex justify-content-between align-items-center p-3 border-bottom">
           <h4 className="m-0">Your Cart</h4>
@@ -422,11 +420,29 @@ const FoodNavbar: React.FC = () => {
         </div>
       </div>
 
-      <SuccessModal 
-        show={showSuccessModal} 
-        onHide={() => setShowSuccessModal(false)} 
-        countdownValue={countdownValue}
-      />
+      {/* Success Message */}
+      {showSuccessMessage && (
+        <div className="success-message-overlay">
+          <div className="success-message-container">
+            <div className="success-icon-wrapper mb-4">
+              <div className="success-icon">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+            </div>
+            <h2 className="mb-3" style={{ fontWeight: 'bold', color: '#28a745' }}>Thank You For Your Purchase!</h2>
+            <p className="mb-4" style={{ fontSize: '1.1rem' }}>Your delicious food will be prepared shortly. We appreciate your order!</p>
+            <Button variant="success" onClick={() => setShowSuccessMessage(false)} className="glow-button">
+              Continue Shopping
+            </Button>
+            <div className="mt-3">
+              <small className="text-muted">This window will close in {countdownValue} seconds</small>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showCart && <div className="cart-overlay" onClick={() => setShowCart(false)}></div>}
       <style>{`
@@ -478,9 +494,100 @@ const FoodNavbar: React.FC = () => {
           color: #bb2d3b;
         }
         
-        @media (max-width: 576px) {
+        /* Success Message Styles */
+        .success-message-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1060;
+        }
+        
+        .success-message-container {
+          background-color: white;
+          border-radius: 10px;
+          padding: 2rem;
+          max-width: 550px;
+          width: 90%;
+          text-align: center;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+          animation: fadeInUp 0.5s;
+        }
+        
+        .success-icon-wrapper {
+          display: flex;
+          justify-content: center;
+        }
+        
+        .success-icon {
+          background-color: #28a745;
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: pulse 2s infinite;
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes pulse {
+          0% {
+            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+          }
+          70% {
+            box-shadow: 0 0 0 15px rgba(40, 167, 69, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+          }
+        }
+        
+        @keyframes glowing {
+          0% { box-shadow: 0 0 5px #28a745; }
+          50% { box-shadow: 0 0 20px #28a745; }
+          100% { box-shadow: 0 0 5px #28a745; }
+        }
+        
+        .glow-button {
+          animation: glowing 1.5s infinite;
+          transition: all 0.3s ease;
+          font-weight: bold;
+        }
+        
+        .glow-button:hover {
+          transform: scale(1.05);
+          animation: glowing 1s infinite;
+        }
+        
+                  @media (max-width: 576px) {
           .cart-slider {
             max-width: 100%;
+          }
+          
+          .success-message-container {
+            width: 92%;
+            padding: 1.5rem;
+          }
+          
+          .success-icon {
+            width: 70px;
+            height: 70px;
           }
         }
         

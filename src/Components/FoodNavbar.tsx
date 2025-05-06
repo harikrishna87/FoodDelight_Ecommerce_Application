@@ -23,26 +23,23 @@ const FoodNavbar: React.FC = () => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [showCart, setShowCart] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false);
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [cartCount, setCartCount] = useState<number>(0);
   const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
   const [countdownValue, setCountdownValue] = useState<number>(10);
 
   const fetchCartItems = () => {
-    setIsInitialLoading(true);
     fetch('https://fooddelight-back-end.onrender.com/cart/get_cart_items')
       .then(res => res.json())
       .then(data => {
         if (data && data.Cart_Items) {
           setCartItems(data.Cart_Items);
+          const count = data.Cart_Items.reduce((total: number, item: CartItem) => total + item.quantity, 0);
+          setCartCount(count);
         }
       })
       .catch(error => {
         console.error('Failed to fetch cart items:', error);
-      })
-      .finally(() => {
-        setIsInitialLoading(false);
       });
   };
 
@@ -66,13 +63,21 @@ const FoodNavbar: React.FC = () => {
   useEffect(() => {
     fetchCartItems();
     
+    const pollingInterval = setInterval(() => {
+      fetchCartItems();
+    }, 2000);
+    
     const handleCartUpdate = () => {
       fetchCartItems();
     };
     
     window.addEventListener('cartUpdated', handleCartUpdate);
+    window.updateCartCount = fetchCartItems;
+    
     return () => {
       window.removeEventListener('cartUpdated', handleCartUpdate);
+      clearInterval(pollingInterval);
+      delete window.updateCartCount;
     };
   }, []);
 
@@ -86,33 +91,35 @@ const FoodNavbar: React.FC = () => {
   const handleCartToggle = (e: React.MouseEvent<HTMLElement>): void => {
     e.preventDefault();
     setShowCart(!showCart);
+    if (!showCart) {
+      fetchCartItems();
+    }
   };
 
   const handleDeleteItem = (name: string) => {
-    setCartItems(prevItems => prevItems.filter(item => item.name !== name));
-
     fetch(`https://fooddelight-back-end.onrender.com/cart/delete_cart_item/${encodeURIComponent(name)}`, {
       method: 'DELETE',
     })
       .then(res => {
-        if (!res.ok) {
+        if (res.ok) {
+          setCartItems(prevItems => prevItems.filter(item => item.name !== name));
+        } else {
           console.error('Failed to delete item from cart');
-          fetchCartItems();
         }
       })
       .catch(error => {
         console.error('Error deleting item from cart:', error);
-        fetchCartItems();
       });
   };
 
   const handleUpdateQuantity = (_id: string, quantity: number) => {
     if (quantity < 1) return;
+    
     const updatedItems = cartItems.map(item =>
       item._id === _id ? { ...item, quantity } : item
     );
     setCartItems(updatedItems);
-
+    
     fetch('https://fooddelight-back-end.onrender.com/cart/update_cart_quantity', {
       method: 'PATCH',
       headers: {
@@ -302,15 +309,7 @@ const FoodNavbar: React.FC = () => {
         </div>
 
         <div className="cart-body p-3">
-          {isInitialLoading && (
-            <div className="text-center my-3">
-              <div className="spinner-border text-success" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          )}
-
-          {!isInitialLoading && cartItems.length === 0 ? (
+          {cartItems.length === 0 ? (
             <div className="text-center d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '30vh' }}>
               <div className="mb-3">
                 <FaShoppingCart size={48} className="text-muted mb-3" />
@@ -420,7 +419,6 @@ const FoodNavbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Success Message */}
       {showSuccessMessage && (
         <div className="success-message-overlay">
           <div className="success-message-container">
@@ -494,7 +492,6 @@ const FoodNavbar: React.FC = () => {
           color: #bb2d3b;
         }
         
-        /* Success Message Styles */
         .success-message-overlay {
           position: fixed;
           top: 0;
@@ -575,7 +572,7 @@ const FoodNavbar: React.FC = () => {
           animation: glowing 1s infinite;
         }
         
-                  @media (max-width: 576px) {
+        @media (max-width: 576px) {
           .cart-slider {
             max-width: 100%;
           }
@@ -591,7 +588,6 @@ const FoodNavbar: React.FC = () => {
           }
         }
         
-        /* Animation for cart items */
         .cart-items .card {
           transition: all 0.2s ease-in-out;
         }
@@ -601,7 +597,6 @@ const FoodNavbar: React.FC = () => {
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
         }
         
-        /* Button styling */
         .btn-outline-success {
           border-color: #28a745;
           color: #28a745;
@@ -612,7 +607,6 @@ const FoodNavbar: React.FC = () => {
           color: white;
         }
         
-        /* Custom scrollbar for cart items */
         .cart-items::-webkit-scrollbar {
           width: 6px;
         }
@@ -634,5 +628,11 @@ const FoodNavbar: React.FC = () => {
     </>
   );
 };
+
+declare global {
+  interface Window {
+    updateCartCount?: () => void;
+  }
+}
 
 export default FoodNavbar;
